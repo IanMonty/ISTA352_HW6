@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>HW6 Problem 3</title>
+		<meta charset="utf-8">
+		<style>
+			body {
+				margin: 0px;
+				background-color: #000000;
+				overflow: hidden;
+			}
+			
+		</style>
+	</head>
+	<body>
+		<script src="build/three.js"></script>
+		<script src="examples/js/controls/FirstPersonControls.js"></script>
+<!-- 		<script src="examples/js/RequestAnimationFrame.js"</script> -->
+		<script>
+		
+			var camera, scene, renderer;
+			var mesh, light1, light2;
+			var x1 = Math.random()* 2000 - 1000;
+			var mouseX;
+			var mouseY;
+			var clock = new THREE.Clock();
+			var windowHalfX = window.innerWidth / 2;
+			var windowHalfY = window.innerHeight /2;
+			var wall1;
+			var wall2;
+			var wall3;
+			
+			camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 1, 3000);
+			camera.position.z = 600;
+			
+			
+			init();
+			animate();
+			
+			function init(){
+			
+				camera = new THREE.PerspectiveCamera( 70, window.innerWidth /window.innerHeight, 1, 30000);
+				camera.position.z = 600;
+				
+				controls = new THREE.FirstPersonControls( camera );
+
+				controls.movementSpeed = 1000;
+				controls.lookSpeed = 0.125;
+				controls.lookVertical = false;
+				
+				
+				
+				renderer = new THREE.WebGLRenderer();
+				renderer.setSize( window.innerWidth, window.innerHeight );
+				document.body.appendChild( renderer.domElement);
+				
+				
+				scene = new THREE.Scene();
+				var backwall = new THREE.CubeGeometry(1000, 20, 20 );
+				var sidewall = new THREE.CubeGeometry(20,20,1000);
+				var cube = new THREE.CubeGeometry( 5, 5, 5);
+				
+				wall1 = new THREE.Mesh( backwall, new THREE.MeshPhongMaterial({ color: Math.random() * 0xffffff} ) );
+				wall2 = new THREE.Mesh( sidewall, new THREE.MeshPhongMaterial({ color: Math.random() * 0xffffff} ) );
+				wall3 = new THREE.Mesh( sidewall, new THREE.MeshPhongMaterial({ color: Math.random() * 0xffffff} ) );				
+				wall2.position.x = 500;
+				wall2.position.z = 490;
+				wall3.position.x = -500;
+				wall3.position.z = 490;
+				scene.add( wall1);
+				scene.add( wall2);
+				scene.add( wall3);
+// 				for ( var i = 0; i < 10; i++) {
+// 					
+// 					var object = new THREE.Mesh( geometry, new THREE.MeshPhongMaterial( { color: Math.random() * 0xffffff} ) );
+// 					
+// 					object.position.x = Math.random() * 600 - 300;
+// 					object.position.z = Math.random() * 600 - 300;
+// 					
+// 					scene.add( object);
+// 					
+// 				}
+				
+				light1 = new THREE.AmbientLight(0x404040);
+				scene.add(light1);
+				
+				
+				
+				
+				
+			}
+			
+			
+			
+			var t = 0;
+			function animate() {
+				requestAnimationFrame( animate );
+				light1.position.x = x1 * Math.sin(t);
+				light1.position.z = x1 * Math.cos(t);
+				
+				var vec = [ new THREE.Vector3(0,0,1),
+							new THREE.Vector3(1,0,1),
+							new THREE.Vector3(1,0,0),
+							new THREE.Vector3(1,0,-1),
+							new THREE.Vector3(0,0,-1),
+							new THREE.Vector3(-1,0,-1),
+							new THREE.Vector3(-1,0,0),
+							new THREE.Vector3(-1,0,1)
+						  ];
+						  
+						   
+				var ray = new THREE.Raycaster( camera.position, vec );
+				
+//				var c = THREE.Collisions.rayCastNearest( ray );
+				
+				var collision1;
+				var collision2;
+				var collision3;
+				var distance = 1;
+				collision = ray.intersectObject(wall1);
+				collision = ray.intersectObject(wall2);
+				collision = ray.intersectObject(wall3);
+				if (collision1 == true){
+					camera.position = (0,0,600);
+				}
+				
+				if (collision2 == true){
+					camera.position = (0,0,600);
+				}
+				
+				if (collision3 == true){
+					camera.position = (0,0,600);
+				}
+				
+				
+				
+				render(scene, camera);
+				
+			}
+			
+			function render() {
+
+				controls.update( clock.getDelta() );
+				renderer.render( scene, camera );
+
+			}
+
+		</script>
+	</body>
+	
+</html>

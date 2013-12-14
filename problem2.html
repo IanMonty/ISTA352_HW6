@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>HW6 Problem 2</title>
+		<meta charset="utf-8">
+		<style>
+			body {
+				margin: 0px;
+				background-color: #000000;
+				overflow: hidden;
+			}
+			
+		</style>
+	</head>
+	<body>
+		<script src="build/three.min.js"></script>
+		<script src="examples/js/controls/TrackballControls.js"></script>
+		
+		<script>
+			var camera, scene, renderer;
+			var mesh, light1, light2;
+			var x1 = Math.random()* 2000 - 1000;
+			var x2 = Math.random()* 2000 - 1000;
+			var x3 = Math.random() *2000 - 1000;
+			var t = 0;
+			var mouseX = 0, mouseY = 0;
+			var windowHalfX = window.innerWidth / 2;
+			var windowHalfY = window.innerHeight /2;
+			var clock = new THREE.Clock();
+			var zoom = false;
+			init();
+			animate();
+			
+			function init() {
+				renderer = new THREE.WebGLRenderer();
+				renderer.setSize( window.innerWidth, window.innerHeight );
+				document.body.appendChild( renderer.domElement);
+				
+				//
+				
+				camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 1, 3000);
+				camera.position.z = 600;
+				controls = new THREE.TrackballControls(camera);
+				controls.target.z = 0;
+				
+				//camera.position.x = 600;
+				scene = new THREE.Scene();
+				var geometry = new THREE.SphereGeometry( 20, 20, 20 );
+				var sphere = new THREE.SphereGeometry( 5, 5, 5);
+				
+				for ( var i = 0; i < 10; i++) {
+					
+					var object = new THREE.Mesh( geometry, new THREE.MeshPhongMaterial( { color: Math.random() * 0xffffff} ) );
+					
+					object.position.x = Math.random() * 600 - 300;
+					object.position.z = Math.random() * 600 - 300;
+					
+					scene.add( object);
+					
+				}
+				
+				
+				light1 = new THREE.DirectionalLight(Math.random() * 0xffffff, 2, 50);
+				scene.add(light1);
+				light2 = new THREE.DirectionalLight(Math.random() * 0xffffff, 2, 50);
+				scene.add(light2);
+				light3 = new THREE.DirectionalLight(Math.random() * 0xffffff, 2, 50);
+				scene.add(light3);
+				
+				var v1 = new THREE.Mesh( sphere, new THREE.MeshBasicMaterial( {color: 0xffffff} ) );
+				v1.position = light1.position;
+				scene.add(v1);
+				var v2 = new THREE.Mesh( sphere, new THREE.MeshBasicMaterial( {color: 0xffffff} ));
+				v2.position = light2.position;
+				scene.add(v2);		
+				var v3 = new THREE.Mesh( sphere, new THREE.MeshBasicMaterial( {color: 0xffffff} ));
+				v3.position = light3.position;
+				scene.add(v3);
+						
+				document.addEventListener( 'mousemove', onDocumentMouseMove, false);
+				document.addEventListener( 'mousedown', onDocumentMouseDown, false);
+//				document.addEventListener( 'mouseup', onDocumentMouseUp, false);
+			}
+			
+			function onDocumentMouseMove( event ) {
+			
+				mouseX = (event.clientX - windowHalfX )/2;
+				mouseY = (event.clientY - windowHalfY )/2;
+				
+			}
+// 			
+			function onDocumentMouseDown( event ) {
+				event.preventDefault();
+				if(zoom == false){
+					camera.setLens(100,50);
+					zoom = true;
+				}
+				else
+				{
+					camera.setLens(50,70);
+					zoom = false;
+				}
+
+			}
+			
+// 			function onDocumentMouseUp( event ) {
+// 				event.preventDefault();
+// 				camera.setLens(50, 70);
+// 				
+// 			}
+							
+			function animate() {
+				requestAnimationFrame( animate );
+				light1.position.x = x1 * Math.sin(t);
+				light1.position.z = x1 * Math.cos(t);
+				light2.position.x = x2 * Math.cos(t);
+				light2.position.y = x2 * Math.sin(t);
+				light3.position.z = x3 * Math.sin(t);
+				light3.position.y = x3 * Math.cos(t);
+				
+				
+				
+//				camera.position.x = camera.position.x + 2 * Math.cos(t);
+//				camera.position.z = camera.position.z + 2 * Math.sin(t);
+				
+				camera.position.x = mouseX;
+				camera.position.y = mouseY;
+				
+//				controls.update();
+//				renderer.render( scene, camera);
+				render();
+				
+				t += .01
+			}
+			
+			function render() {
+				//controls.update(clock.getDelta());
+				renderer.render(scene, camera);
+				}
+			
+		</script>
+	</body>
+	
+</html>
